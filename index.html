@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Financial Tracker Pro</title>
+    <link rel="stylesheet" href="src/styles/main.css">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Financial Tracker Pro</h1>
+            <p>Professional Financial Control System</p>
+        </div>
+
+        <div class="main-menu">
+            <div class="menu-grid">
+                <div class="menu-card" onclick="navigateTo('src/pages/trading-tracker.html')">
+                    <div class="menu-icon">◦</div>
+                    <h2>Trading Tracker</h2>
+                    <p>Complete trading analysis and performance tracking</p>
+                </div>
+
+                <div class="menu-card alien-bizarro" onclick="navigateTo('src/pages/portfolio-tracker.html')" onmouseenter="startAlienScan()" onmouseleave="stopAlienScan()">
+                    <div class="alien-brain-core">
+                        <div class="neural-web"></div>
+                        <div class="quantum-eyes">
+                            <div class="eye left-eye"></div>
+                            <div class="eye right-eye"></div>
+                        </div>
+                        <div class="dimension-portal"></div>
+                        <div class="consciousness-meter">
+                            <div class="meter-fill"></div>
+                        </div>
+                    </div>
+                    <div class="menu-icon alien-symbol">◦</div>
+                    <h2 class="alien-text">Portfolio Tracker</h2>
+                    <p class="alien-description" id="alienDescription">Advanced portfolio management and monitoring</p>
+                    <div class="alien-tentacles">
+                        <div class="tentacle t1"></div>
+                        <div class="tentacle t2"></div>
+                        <div class="tentacle t3"></div>
+                        <div class="tentacle t4"></div>
+                    </div>
+                    <div class="cosmic-energy"></div>
+                    <div class="reality-scanner">
+                        <div class="scan-line"></div>
+                        <div class="quantum-particles">
+                            <div class="particle p1"></div>
+                            <div class="particle p2"></div>
+                            <div class="particle p3"></div>
+                            <div class="particle p4"></div>
+                            <div class="particle p5"></div>
+                        </div>
+                    </div>
+                    <div class="alien-status" id="alienStatus">DORMANT</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>Professional Financial Control System - Alien Technology</p>
+        </div>
+    </div>
+
+    <script>
+        function navigateTo(page) {
+            window.location.href = page;
+        }
+
+        // ========== ALIEN SCANNER SIMPLIFICADO ========== 
+        let alienMessages = [
+            "SCANNING YOUR TRADING AURA...",
+            "DETECTING PROFIT POTENTIAL...",
+            "ALIEN WISDOM ACTIVATED...",
+            "QUANTUM ANALYSIS COMPLETE...",
+            "READY FOR COSMIC TRADING..."
+        ];
+        
+        function startAlienScan() {
+            const status = document.getElementById('alienStatus');
+            const description = document.getElementById('alienDescription');
+            
+            if (status) status.textContent = 'SCANNING...';
+            
+            setTimeout(() => {
+                const randomMessage = alienMessages[Math.floor(Math.random() * alienMessages.length)];
+                if (description) description.textContent = randomMessage;
+                if (status) status.textContent = 'ANALYSIS COMPLETE';
+            }, 1500);
+        }
+
+        function stopAlienScan() {
+            const status = document.getElementById('alienStatus');
+            const description = document.getElementById('alienDescription');
+            
+            if (status) status.textContent = 'ALIEN READY';
+            if (description) description.textContent = 'Advanced portfolio management and monitoring';
+        }
+
+
+    </script>
+</body>
+</html>

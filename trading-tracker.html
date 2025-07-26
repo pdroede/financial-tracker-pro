@@ -1,0 +1,1491 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trading Tracker Pro</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns@3.0.0/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'SF Pro Display', 'Inter', 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: 
+                /* BASE ALIENÍGENA */
+                radial-gradient(ellipse at center, #0a0a0a 0%, #000000 100%),
+                /* PADRÃO HEXAGONAL ALIENÍGENA */
+                url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.03'%3E%3Cpath d='M30 30l15-8.66v17.32L30 30zm0 0L15 21.34v17.32L30 30z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+            background-color: #000000 !important;
+            min-height: 100vh;
+            color: #ffffff;
+            line-height: 1.5;
+            position: relative;
+            overflow-x: hidden;
+            font-weight: 300;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        /* EFEITO SCAN LINES ALIENÍGENA */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                linear-gradient(transparent 50%, rgba(0, 255, 136, 0.005) 50%),
+                linear-gradient(90deg, transparent 50%, rgba(255, 255, 255, 0.01) 50%);
+            background-size: 2px 2px, 120px 120px;
+            z-index: 1;
+            pointer-events: none;
+            animation: alienScan 20s linear infinite;
+        }
+
+        @keyframes alienScan {
+            0% { 
+                background-position: 0 0, 0 0;
+                opacity: 0.3;
+            }
+            50% {
+                background-position: 0 -2px, 60px 60px;
+                opacity: 0.7;
+            }
+            100% { 
+                background-position: 0 -4px, 120px 120px;
+                opacity: 0.3;
+            }
+        }
+
+        /* PARTÍCULAS FLUTUANTES ALIENÍGENAS */
+        body::after {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(1px 1px at 20% 30%, rgba(0, 255, 136, 0.4), transparent),
+                radial-gradient(1px 1px at 80% 20%, rgba(255, 255, 255, 0.3), transparent),
+                radial-gradient(2px 2px at 60% 80%, rgba(0, 255, 136, 0.2), transparent),
+                radial-gradient(1px 1px at 30% 70%, rgba(255, 255, 255, 0.4), transparent),
+                radial-gradient(1px 1px at 90% 60%, rgba(0, 255, 136, 0.3), transparent),
+                radial-gradient(2px 2px at 10% 90%, rgba(255, 255, 255, 0.2), transparent);
+            background-size: 
+                800px 600px, 900px 700px, 600px 400px, 700px 500px, 800px 600px, 500px 400px;
+            z-index: 2;
+            pointer-events: none;
+            animation: alienFloat 40s linear infinite;
+        }
+
+        @keyframes alienFloat {
+            0% { 
+                background-position: 
+                    0% 0%, 100% 0%, 50% 100%, 0% 50%, 100% 50%, 50% 0%;
+            }
+            100% { 
+                background-position: 
+                    100% 100%, 0% 100%, 0% 0%, 100% 0%, 0% 100%, 100% 100%;
+            }
+        }
+
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: 25px;
+            position: relative;
+            z-index: 50;
+        }
+
+        /* ALIEN PROFISSIONAL GRID MATRIX */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: 
+                url("data:image/svg+xml,%3Csvg width='100' height='100' xmlns='http://www.w3.org/2000/svg'%3E%3Cdefs%3E%3Cpattern id='alienMatrix' x='0' y='0' width='50' height='50' patternUnits='userSpaceOnUse'%3E%3Cpath d='M0 0L25 25L50 0L50 50L25 25L0 50Z' fill='none' stroke='%23ffffff' stroke-width='0.3' opacity='0.08'/%3E%3Ccircle cx='25' cy='25' r='1' fill='%2300ff88' opacity='0.15'/%3E%3C/pattern%3E%3C/defs%3E%3Crect width='100' height='100' fill='url(%23alienMatrix)'/%3E%3C/svg%3E");
+            z-index: 1;
+            pointer-events: none;
+            animation: alienMatrix 30s linear infinite;
+        }
+
+        @keyframes alienMatrix {
+            0% { transform: translateX(0) translateY(0); }
+            100% { transform: translateX(-50px) translateY(-50px); }
+        }
+
+        /* ALIEN PROFISSIONAL FLOATING ENERGY */
+        body::after {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: 
+                radial-gradient(circle at 20% 20%, rgba(0, 255, 136, 0.08) 0%, transparent 30%),
+                radial-gradient(circle at 80% 80%, rgba(255, 51, 102, 0.06) 0%, transparent 35%),
+                radial-gradient(circle at 60% 40%, rgba(255, 255, 255, 0.04) 0%, transparent 25%),
+                radial-gradient(circle at 30% 70%, rgba(0, 255, 136, 0.05) 0%, transparent 40%),
+                radial-gradient(circle at 90% 30%, rgba(255, 255, 255, 0.03) 0%, transparent 30%),
+                radial-gradient(circle at 10% 90%, rgba(255, 51, 102, 0.04) 0%, transparent 35%);
+            z-index: 2;
+            pointer-events: none;
+            animation: alienEnergy 25s ease-in-out infinite;
+        }
+
+        @keyframes alienEnergy {
+            0%, 100% { 
+                transform: scale(1) rotate(0deg);
+                opacity: 0.8;
+            }
+            50% { 
+                transform: scale(1.1) rotate(180deg);
+                opacity: 1;
+            }
+        }
+
+        .header {
+            background: 
+                linear-gradient(135deg, rgba(0, 0, 0, 0.98) 0%, rgba(0, 0, 0, 1) 100%),
+                linear-gradient(45deg, rgba(0, 255, 136, 0.04) 0%, transparent 50%, rgba(255, 51, 102, 0.03) 100%);
+            border: 1px solid rgba(0, 255, 136, 0.3);
+            border-radius: 8px;
+            padding: 25px 40px;
+            text-align: center;
+            margin-bottom: 25px;
+            box-shadow: 
+                0 0 0 1px rgba(255, 255, 255, 0.1),
+                0 8px 25px rgba(0, 0, 0, 0.7),
+                inset 0 1px 0 rgba(255, 255, 255, 0.08),
+                0 0 40px rgba(0, 255, 136, 0.08);
+            position: relative;
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+            transition: all 0.4s ease;
+        }
+
+        .header:hover {
+            transform: translateY(-3px);
+            border-color: rgba(0, 255, 136, 0.5);
+            box-shadow: 
+                0 0 0 1px rgba(255, 255, 255, 0.15),
+                0 12px 35px rgba(0, 0, 0, 0.8),
+                inset 0 1px 0 rgba(255, 255, 255, 0.12),
+                0 0 60px rgba(0, 255, 136, 0.15);
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, 
+                transparent 0%, 
+                rgba(0, 255, 136, 0.8) 20%, 
+                rgba(255, 255, 255, 1) 50%, 
+                rgba(255, 51, 102, 0.8) 80%, 
+                transparent 100%);
+            animation: alienHeaderGlow 4s ease-in-out infinite;
+        }
+
+        .header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, 
+                transparent 0%, 
+                rgba(255, 51, 102, 0.8) 20%, 
+                rgba(255, 255, 255, 1) 50%, 
+                rgba(0, 255, 136, 0.8) 80%, 
+                transparent 100%);
+            animation: alienHeaderGlow 4s ease-in-out infinite reverse;
+        }
+
+        @keyframes alienHeaderGlow {
+            0%, 100% { 
+                opacity: 0.6; 
+                transform: scaleX(1);
+            }
+            50% { 
+                opacity: 1; 
+                transform: scaleX(1.05);
+            }
+        }
+
+        .header h1 {
+            font-size: 1.4em;
+            margin-bottom: 8px;
+            font-weight: 300;
+            color: #ffffff;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            position: relative;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+        }
+
+        .header h1::before {
+            content: '';
+        }
+
+        .header h1::after {
+            content: '';
+        }
+        }
+
+        .header h1::after {
+            content: ' ◦';
+            color: rgba(255, 51, 102, 0.8);
+            animation: alienSymbolRotate 8s linear infinite reverse;
+        }
+
+        @keyframes alienTitlePulse {
+            0%, 100% { 
+                transform: scale(1);
+                text-shadow: 
+                    0 0 20px rgba(255, 255, 255, 0.8),
+                    0 0 40px rgba(0, 255, 136, 0.4),
+                    0 0 60px rgba(255, 51, 102, 0.3);
+            }
+            50% { 
+                transform: scale(1.05);
+                text-shadow: 
+                    0 0 30px rgba(255, 255, 255, 1),
+                    0 0 60px rgba(0, 255, 136, 0.6),
+                    0 0 80px rgba(255, 51, 102, 0.5);
+            }
+        }
+
+        @keyframes alienSymbolRotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .header p {
+            opacity: 0.7;
+            font-size: 0.75em;
+            color: rgba(0, 255, 136, 0.8);
+            font-weight: 300;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .stat-card {
+            background: 
+                linear-gradient(135deg, rgba(0, 0, 0, 0.95) 0%, rgba(0, 0, 0, 1) 100%),
+                linear-gradient(45deg, rgba(0, 255, 136, 0.05) 0%, transparent 50%, rgba(255, 51, 102, 0.03) 100%);
+            padding: 25px 20px;
+            border-radius: 12px;
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-bottom: 3px solid rgba(0, 255, 136, 0.3);
+            text-align: center;
+            transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+            min-height: 160px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            backdrop-filter: blur(15px);
+            box-shadow: 
+                0 8px 32px rgba(0, 0, 0, 0.8),
+                0 0 0 1px rgba(0, 255, 136, 0.2),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1);
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: linear-gradient(90deg, 
+                transparent 0%, 
+                rgba(0, 255, 136, 0.8) 25%,
+                rgba(255, 255, 255, 1) 50%, 
+                rgba(255, 51, 102, 0.8) 75%,
+                transparent 100%);
+            opacity: 0;
+            transition: all 0.6s ease;
+            animation: alienCardGlow 6s ease-in-out infinite;
+        }
+
+        .stat-card::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background: radial-gradient(circle, rgba(0, 255, 136, 0.1) 0%, transparent 70%);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            transition: all 0.6s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-12px) scale(1.05) rotateX(5deg);
+            border-color: rgba(0, 255, 136, 0.6);
+            border-bottom-color: rgba(0, 255, 136, 0.8);
+            background: 
+                linear-gradient(135deg, rgba(0, 0, 0, 0.9) 0%, rgba(0, 0, 0, 0.98) 100%),
+                linear-gradient(45deg, rgba(0, 255, 136, 0.15) 0%, transparent 50%, rgba(255, 51, 102, 0.1) 100%);
+            box-shadow: 
+                0 20px 60px rgba(0, 0, 0, 0.6),
+                0 0 40px rgba(0, 255, 136, 0.3),
+                0 0 0 2px rgba(0, 255, 136, 0.4),
+                inset 0 1px 0 rgba(255, 255, 255, 0.3);
+        }
+
+        .stat-card:hover::before {
+            opacity: 1;
+            height: 6px;
+        }
+
+        .stat-card:hover::after {
+            width: 100px;
+            height: 100px;
+        }
+
+        @keyframes alienCardGlow {
+            0%, 100% { 
+                transform: translateX(-100%);
+                opacity: 0;
+            }
+            50% { 
+                transform: translateX(100%);
+                opacity: 1;
+            }
+        }
+
+        .stat-value {
+            font-size: 1.8em;
+            font-weight: 200;
+            margin-bottom: 8px;
+            position: relative;
+            z-index: 1;
+            line-height: 1;
+            color: #ffffff;
+        }
+
+        .stat-label {
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 0.8em;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-weight: 200;
+            position: relative;
+            z-index: 1;
+            line-height: 1.1;
+        }
+
+        .profit { 
+            color: #00ff88; 
+            text-shadow: 0 0 8px rgba(0, 255, 136, 0.6);
+        }
+        .loss { 
+            color: #ff3366; 
+            text-shadow: 0 0 8px rgba(255, 51, 102, 0.6);
+        }
+        .neutral { 
+            color: #ffffff; 
+        }
+        
+        .long-type {
+            color: #00ff88 !important;
+            text-shadow: 0 0 8px rgba(0, 255, 136, 0.6);
+            font-weight: 300;
+        }
+        
+        .short-type {
+            color: #ff3366 !important;
+            text-shadow: 0 0 8px rgba(255, 51, 102, 0.6);
+            font-weight: 300;
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 300px 1fr;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .form-section {
+            background: 
+                linear-gradient(135deg, rgba(0, 0, 0, 0.95) 0%, rgba(0, 0, 0, 0.98) 100%),
+                linear-gradient(45deg, rgba(255, 255, 255, 0.01) 0%, transparent 100%);
+            padding: 50px;
+            border-radius: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-bottom: 2px solid rgba(255, 255, 255, 0.04);
+            height: fit-content;
+            backdrop-filter: blur(8px);
+            position: relative;
+            overflow: hidden;
+            box-shadow: 
+                0 8px 30px rgba(0, 0, 0, 0.7),
+                inset 0 1px 0 rgba(255, 255, 255, 0.05);
+        }
+
+        .form-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, 
+                transparent 0%, 
+                rgba(0, 255, 136, 0.8) 25%,
+                rgba(255, 255, 255, 0.9) 50%, 
+                rgba(255, 51, 102, 0.8) 75%,
+                transparent 100%);
+        }
+
+        .form-section h2 {
+            margin-bottom: 35px;
+            color: #ffffff;
+            font-size: 1.1em;
+            font-weight: 100;
+            text-align: center;
+            text-transform: uppercase;
+            letter-spacing: 6px;
+            opacity: 0.9;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding-bottom: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 12px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 200;
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.8em;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid rgba(0, 255, 136, 0.2);
+            border-radius: 6px;
+            font-size: 0.85em;
+            background: 
+                linear-gradient(135deg, rgba(0, 0, 0, 0.9) 0%, rgba(0, 0, 0, 0.95) 100%),
+                linear-gradient(45deg, rgba(0, 255, 136, 0.03) 0%, transparent 100%);
+            color: #ffffff;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            font-weight: 200;
+            backdrop-filter: blur(10px);
+            box-shadow: 
+                0 2px 10px rgba(0, 0, 0, 0.4),
+                inset 0 1px 0 rgba(255, 255, 255, 0.05);
+            position: relative;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: rgba(0, 255, 136, 0.6);
+            box-shadow: 
+                0 0 30px rgba(0, 255, 136, 0.2),
+                0 8px 25px rgba(0, 0, 0, 0.4),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            background: 
+                linear-gradient(135deg, rgba(0, 0, 0, 0.95) 0%, rgba(0, 0, 0, 1) 100%),
+                linear-gradient(45deg, rgba(0, 255, 136, 0.08) 0%, transparent 100%);
+            transform: translateY(-2px);
+        }
+
+        .form-group input::placeholder {
+            color: rgba(255, 255, 255, 0.4);
+            font-weight: 200;
+            letter-spacing: 1px;
+        }
+
+        .btn {
+            background: 
+                linear-gradient(135deg, rgba(0, 0, 0, 0.95) 0%, rgba(0, 0, 0, 1) 100%),
+                linear-gradient(45deg, rgba(0, 255, 136, 0.1) 0%, transparent 50%, rgba(255, 51, 102, 0.05) 100%);
+            color: #ffffff;
+            border: 1px solid rgba(0, 255, 136, 0.3);
+            padding: 12px 20px;
+            border-radius: 6px;
+            font-size: 0.8em;
+            font-weight: 200;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            width: 100%;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-top: 15px;
+            position: relative;
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+            box-shadow: 
+                0 4px 16px rgba(0, 0, 0, 0.4),
+                0 0 0 1px rgba(0, 255, 136, 0.15),
+                inset 0 1px 0 rgba(255, 255, 255, 0.05);
+            text-shadow: 0 0 5px rgba(255, 255, 255, 0.6);
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, 
+                transparent 0%, 
+                rgba(0, 255, 136, 0.3) 50%, 
+                transparent 100%);
+            transition: left 0.8s ease;
+        }
+
+        .btn:hover {
+            background: 
+                linear-gradient(135deg, rgba(0, 0, 0, 0.9) 0%, rgba(0, 0, 0, 0.98) 100%),
+                linear-gradient(45deg, rgba(0, 255, 136, 0.2) 0%, transparent 50%, rgba(255, 51, 102, 0.1) 100%);
+            border-color: rgba(0, 255, 136, 0.8);
+            transform: translateY(-4px) scale(1.02);
+            box-shadow: 
+                0 15px 50px rgba(0, 0, 0, 0.4),
+                0 0 40px rgba(0, 255, 136, 0.3),
+                0 0 0 2px rgba(0, 255, 136, 0.4),
+                inset 0 1px 0 rgba(255, 255, 255, 0.2);
+            text-shadow: 
+                0 0 15px rgba(255, 255, 255, 1),
+                0 0 30px rgba(0, 255, 136, 0.6);
+        }
+
+        .btn:hover::before {
+            left: 100%;
+        }
+
+        .main-dashboard {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            height: 100%;
+        }
+
+        .trades-table {
+            background: 
+                linear-gradient(135deg, rgba(0, 0, 0, 0.98) 0%, rgba(0, 0, 0, 1) 100%),
+                linear-gradient(45deg, rgba(0, 255, 136, 0.03) 0%, transparent 50%, rgba(255, 51, 102, 0.02) 100%);
+            border-radius: 20px;
+            border: 2px solid rgba(0, 255, 136, 0.2);
+            border-bottom: 3px solid rgba(0, 255, 136, 0.4);
+            overflow: hidden;
+            height: 450px;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            backdrop-filter: blur(20px);
+            box-shadow: 
+                0 15px 50px rgba(0, 0, 0, 0.8),
+                0 0 0 1px rgba(0, 255, 136, 0.3),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1);
+        }
+
+        .trades-table::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, 
+                transparent 0%, 
+                rgba(0, 255, 136, 0.8) 25%,
+                rgba(255, 255, 255, 1) 50%, 
+                rgba(255, 51, 102, 0.8) 75%,
+                transparent 100%);
+            animation: alienTableGlow 5s ease-in-out infinite;
+        }
+
+        @keyframes alienTableGlow {
+            0%, 100% { 
+                opacity: 0.6;
+                transform: scaleX(0.8);
+            }
+            50% { 
+                opacity: 1;
+                transform: scaleX(1.2);
+            }
+        }
+
+        .table-header {
+            background: rgba(0, 0, 0, 0.99);
+            color: #ffffff;
+            padding: 25px;
+            text-align: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .table-header h3 {
+            font-size: 1.1em;
+            font-weight: 100;
+            text-transform: uppercase;
+            letter-spacing: 4px;
+            opacity: 0.9;
+        }
+
+        .table-wrapper {
+            overflow-x: auto;
+            flex: 1;
+            overflow-y: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            font-size: 0.85em;
+        }
+
+        th {
+            background: rgba(0, 0, 0, 0.8);
+            font-weight: 200;
+            color: rgba(255, 255, 255, 0.8);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-size: 0.75em;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        td {
+            color: #ffffff;
+            font-weight: 200;
+        }
+
+        tr:hover {
+            background: rgba(255, 255, 255, 0.01);
+        }
+
+        .delete-btn {
+            background: rgba(255, 255, 255, 0.05);
+            color: #ffffff;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 8px 12px;
+            border-radius: 2px;
+            cursor: pointer;
+            font-size: 0.75em;
+            font-weight: 200;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .delete-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 255, 255, 0.3);
+        }
+
+        .large-chart-section {
+            margin-bottom: 20px;
+        }
+
+        .large-chart-container {
+            background: 
+                linear-gradient(135deg, rgba(0, 0, 0, 0.95) 0%, rgba(0, 0, 0, 0.98) 100%),
+                linear-gradient(45deg, rgba(255, 255, 255, 0.01) 0%, transparent 100%);
+            padding: 35px;
+            border-radius: 12px;
+            border: 1px solid rgba(0, 255, 136, 0.2);
+            height: 380px;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            overflow: hidden;
+            backdrop-filter: blur(8px);
+            box-shadow: 
+                0 8px 30px rgba(0, 0, 0, 0.7),
+                inset 0 1px 0 rgba(255, 255, 255, 0.05);
+        }
+
+        .large-chart-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 1px;
+            background: linear-gradient(90deg, 
+                transparent 0%, 
+                rgba(255, 255, 255, 0.3) 50%, 
+                transparent 100%);
+        }
+
+        .large-chart-container h2 {
+            margin-bottom: 15px;
+            color: #ffffff;
+            font-size: 1em;
+            font-weight: 300;
+            text-align: center;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            opacity: 0.9;
+            border-bottom: 1px solid rgba(0, 255, 136, 0.2);
+            padding-bottom: 10px;
+        }
+
+        .large-chart-container canvas {
+            flex: 1;
+        }
+
+        .small-chart-section {
+            margin-bottom: 15px;
+        }
+
+        .small-chart-container {
+            background: 
+                linear-gradient(135deg, rgba(0, 0, 0, 0.95) 0%, rgba(0, 0, 0, 0.98) 100%),
+                linear-gradient(45deg, rgba(255, 255, 255, 0.01) 0%, transparent 100%);
+            padding: 40px;
+            border-radius: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-bottom: 2px solid rgba(255, 255, 255, 0.04);
+            height: 240px;
+            display: flex;
+            flex-direction: column;
+            backdrop-filter: blur(8px);
+            position: relative;
+            box-shadow: 
+                0 8px 30px rgba(0, 0, 0, 0.7),
+                inset 0 1px 0 rgba(255, 255, 255, 0.05);
+        }
+
+        .small-chart-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 1px;
+            background: linear-gradient(90deg, 
+                transparent 0%, 
+                rgba(255, 255, 255, 0.3) 50%, 
+                transparent 100%);
+        }
+
+        .small-chart-container h3 {
+            margin-bottom: 15px;
+            color: #ffffff;
+            font-size: 1em;
+            font-weight: 100;
+            text-align: center;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            opacity: 0.9;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            padding-bottom: 10px;
+        }
+
+        .small-chart-container canvas {
+            flex: 1;
+        }
+
+        .export-section {
+            padding: 40px;
+            background: 
+                linear-gradient(135deg, rgba(0, 0, 0, 0.95) 0%, rgba(0, 0, 0, 0.98) 100%),
+                linear-gradient(45deg, rgba(255, 255, 255, 0.01) 0%, transparent 100%);
+            border-radius: 16px;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-bottom: 2px solid rgba(255, 255, 255, 0.04);
+            backdrop-filter: blur(8px);
+            position: relative;
+            box-shadow: 
+                0 8px 30px rgba(0, 0, 0, 0.7),
+                inset 0 1px 0 rgba(255, 255, 255, 0.05);
+        }
+
+        .export-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 1px;
+            background: linear-gradient(90deg, 
+                transparent 0%, 
+                rgba(255, 255, 255, 0.3) 50%, 
+                transparent 100%);
+        }
+
+        .export-btn {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.02) 100%);
+            color: #ffffff;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            padding: 10px 18px;
+            border-radius: 6px;
+            cursor: pointer;
+            margin: 0 6px;
+            font-size: 0.75em;
+            font-weight: 300;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            display: inline-block;
+            min-width: 120px;
+            backdrop-filter: blur(10px);
+            box-shadow: 
+                0 2px 8px rgba(0, 0, 0, 0.2),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1);
+        }
+
+        .export-btn:hover {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0.08) 100%);
+            border-color: rgba(255, 255, 255, 0.4);
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 
+                0 8px 25px rgba(0, 0, 0, 0.4),
+                0 0 20px rgba(255, 255, 255, 0.1),
+                inset 0 1px 0 rgba(255, 255, 255, 0.3);
+        }
+
+        @media (max-width: 1400px) {
+            .stats-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+            
+            .main-content {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .stats-grid {
+                grid-template-columns: 1fr 1fr;
+                gap: 10px;
+            }
+            
+            .stat-card {
+                padding: 15px 10px;
+                min-height: 80px;
+            }
+            
+            .stat-value {
+                font-size: 1.3em;
+            }
+            
+            .stat-label {
+                font-size: 0.65em;
+            }
+            
+            .header h1 {
+                font-size: 2.5em;
+            }
+            
+            .container {
+                padding: 15px;
+            }
+            
+            .export-btn {
+                display: block;
+                margin: 6px auto;
+                min-width: auto;
+                width: 80%;
+                padding: 8px 12px;
+                font-size: 0.7em;
+            }
+            
+            .large-chart-container {
+                height: 280px;
+                padding: 15px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .header h1 {
+                font-size: 2em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Trading Tracker Pro</h1>
+            <p>Professional Trading Control System</p>
+        </div>
+
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-value profit" id="totalProfit">$0.00</div>
+                <div class="stat-label">Total Profit</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value loss" id="totalLoss">$0.00</div>
+                <div class="stat-label">Total Loss</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value neutral" id="netResult">$0.00</div>
+                <div class="stat-label">Net Result</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value neutral" id="winRate">0%</div>
+                <div class="stat-label">Win Rate</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value neutral" id="totalTrades">0</div>
+                <div class="stat-label">Total Trades</div>
+            </div>
+        </div>
+
+        <div class="main-content">
+            <div class="sidebar">
+                <div class="form-section">
+                    <h2>New Trade</h2>
+                    <form id="tradeForm">
+                        <div class="form-group">
+                            <label for="date">Date</label>
+                            <input type="date" id="date" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="symbol">Asset</label>
+                            <input type="text" id="symbol" placeholder="AAPL, TSLA, BTCUSD" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="type">Type</label>
+                            <select id="type" required>
+                                <option value="">Select Type</option>
+                                <option value="compra">Long (Buy)</option>
+                                <option value="venda">Short (Sell)</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="quantity">Quantity</label>
+                            <input type="number" id="quantity" step="0.000001" placeholder="100" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="entryPrice">Entry Price (USD)</label>
+                            <input type="number" id="entryPrice" step="0.000001" placeholder="150.50" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="exitPrice">Exit Price (USD)</label>
+                            <input type="number" id="exitPrice" step="0.000001" placeholder="155.00" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="leverage">Leverage (Optional)</label>
+                            <input type="number" id="leverage" step="0.1" placeholder="1" min="1" max="100">
+                        </div>
+                        
+                        <button type="submit" class="btn">Add Trade</button>
+                    </form>
+                </div>
+            </div>
+
+            <div class="main-dashboard">
+                <div class="trades-table">
+                    <div class="table-header">
+                        <h3>Trading History</h3>
+                    </div>
+                    <div class="table-wrapper">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Asset</th>
+                                    <th>Type</th>
+                                    <th>Qty</th>
+                                    <th>Entry</th>
+                                    <th>Exit</th>
+                                    <th>Lev</th>
+                                    <th>P&L</th>
+                                    <th>%</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tradesTableBody">
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- GRÁFICO GRANDE SEPARADO -->
+        <div class="large-chart-section">
+            <div class="large-chart-container">
+                <h2>Portfolio Evolution</h2>
+                <canvas id="equityChart"></canvas>
+            </div>
+        </div>
+
+        <!-- GRÁFICO MENOR SEPARADO -->
+        <div class="small-chart-section">
+            <div class="small-chart-container">
+                <h3>Win/Loss Distribution</h3>
+                <canvas id="resultsChart"></canvas>
+            </div>
+        </div>
+
+        <div class="export-section">
+            <button class="export-btn" onclick="exportToCSV()">Export CSV</button>
+            <button class="export-btn" onclick="exportToJSON()">Export JSON</button>
+            <button class="export-btn" onclick="clearAllData()">Clear Data</button>
+        </div>
+    </div>
+
+    <script>
+        class TradingTracker {
+            constructor() {
+                this.trades = JSON.parse(localStorage.getItem('trades')) || [];
+                this.init();
+            }
+
+            init() {
+                this.setupEventListeners();
+                this.updateStats();
+                this.renderTable();
+                this.setupCharts();
+                this.setTodayDate();
+            }
+
+            setTodayDate() {
+                const today = new Date().toISOString().split('T')[0];
+                document.getElementById('date').value = today;
+            }
+
+            setupEventListeners() {
+                document.getElementById('tradeForm').addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    this.addTrade();
+                });
+            }
+
+            addTrade() {
+                const formData = new FormData(document.getElementById('tradeForm'));
+                const trade = {
+                    id: Date.now(),
+                    date: formData.get('date') || document.getElementById('date').value,
+                    symbol: formData.get('symbol') || document.getElementById('symbol').value,
+                    type: formData.get('type') || document.getElementById('type').value,
+                    quantity: parseFloat(formData.get('quantity') || document.getElementById('quantity').value),
+                    entryPrice: parseFloat(formData.get('entryPrice') || document.getElementById('entryPrice').value),
+                    exitPrice: parseFloat(formData.get('exitPrice') || document.getElementById('exitPrice').value),
+                    leverage: parseFloat(formData.get('leverage') || document.getElementById('leverage').value) || 1
+                };
+
+                // Calcular resultado - BASEADO NOS DADOS REAIS DA CORRETORA
+                const priceChange = trade.exitPrice - trade.entryPrice;
+                
+                // Método simples: diferença de preço × quantidade
+                let result = priceChange * trade.quantity;
+                
+                // Para SHORT, inverter o resultado
+                if (trade.type === 'venda') {
+                    result = -result;
+                }
+                
+                // Aplicar alavancagem se maior que 1
+                if (trade.leverage > 1) {
+                    result = result * trade.leverage;
+                }
+                
+                trade.result = result;
+                
+                // Calcular porcentagem
+                const investedAmount = trade.entryPrice * trade.quantity;
+                trade.percentage = investedAmount > 0 ? ((result / investedAmount) * 100) : 0;
+
+                console.log('=== CÁLCULO CORRETORA ===');
+                console.log('Ativo:', trade.symbol);
+                console.log('Tipo:', trade.type === 'compra' ? 'LONG' : 'SHORT');
+                console.log('Quantidade:', trade.quantity);
+                console.log('Preço Entrada:', trade.entryPrice);
+                console.log('Preço Saída:', trade.exitPrice);
+                console.log('Diferença:', priceChange);
+                console.log('Alavancagem:', trade.leverage);
+                console.log('Resultado base:', priceChange * trade.quantity);
+                console.log('Resultado final:', result);
+                console.log('Investimento:', investedAmount);
+                console.log('=========================');
+                
+                // TESTE com dados da imagem
+                console.log('=== TESTE DADOS CORRETORA ===');
+                const testeEntrada = 2126.92;
+                const testeSaida = 2120.40;
+                const testeQty = 1.1698;
+                const testeDiff = testeSaida - testeEntrada;
+                const testeResult = testeDiff * testeQty;
+                console.log('Entrada corretora:', testeEntrada);
+                console.log('Saída corretora:', testeSaida);
+                console.log('Diferença corretora:', testeDiff);
+                console.log('Quantidade corretora:', testeQty);
+                console.log('Resultado corretora:', testeResult);
+                console.log('============================');
+
+                this.trades.push(trade);
+                this.saveTrades();
+                this.updateStats();
+                this.renderTable();
+                this.updateCharts();
+                this.clearForm();
+            }
+
+            deleteTrade(id) {
+                this.trades = this.trades.filter(trade => trade.id !== id);
+                this.saveTrades();
+                this.updateStats();
+                this.renderTable();
+                this.updateCharts();
+            }
+
+            clearForm() {
+                document.getElementById('tradeForm').reset();
+                this.setTodayDate();
+            }
+
+            saveTrades() {
+                localStorage.setItem('trades', JSON.stringify(this.trades));
+            }
+
+            updateStats() {
+                const totalProfit = this.trades
+                    .filter(trade => trade.result > 0)
+                    .reduce((sum, trade) => sum + trade.result, 0);
+
+                const totalLoss = this.trades
+                    .filter(trade => trade.result < 0)
+                    .reduce((sum, trade) => sum + Math.abs(trade.result), 0);
+
+                const netResult = totalProfit - totalLoss;
+                const winningTrades = this.trades.filter(trade => trade.result > 0).length;
+                const winRate = this.trades.length > 0 ? (winningTrades / this.trades.length) * 100 : 0;
+
+                document.getElementById('totalProfit').textContent = this.formatCurrency(totalProfit);
+                document.getElementById('totalLoss').textContent = this.formatCurrency(totalLoss);
+                document.getElementById('netResult').textContent = this.formatCurrency(netResult);
+                document.getElementById('netResult').className = `stat-value ${netResult >= 0 ? 'profit' : 'loss'}`;
+                document.getElementById('winRate').textContent = winRate.toFixed(1) + '%';
+                document.getElementById('totalTrades').textContent = this.trades.length;
+            }
+
+            renderTable() {
+                const tbody = document.getElementById('tradesTableBody');
+                tbody.innerHTML = '';
+
+                this.trades.slice().reverse().forEach(trade => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${this.formatDate(trade.date)}</td>
+                        <td><strong>${trade.symbol}</strong></td>
+                        <td><span class="${trade.type === 'compra' ? 'long-type' : 'short-type'}">${trade.type === 'compra' ? 'LONG' : 'SHORT'}</span></td>
+                        <td>${trade.quantity}</td>
+                        <td>${this.formatCurrency(trade.entryPrice)}</td>
+                        <td>${this.formatCurrency(trade.exitPrice)}</td>
+                        <td>${trade.leverage || 1}x</td>
+                        <td class="${trade.result >= 0 ? 'profit' : 'loss'}">${this.formatCurrency(trade.result)}</td>
+                        <td class="${trade.percentage >= 0 ? 'profit' : 'loss'}">${trade.percentage.toFixed(2)}%</td>
+                        <td><button class="delete-btn" onclick="deleteTrade(${trade.id})">Delete</button></td>
+                    `;
+                    tbody.appendChild(row);
+                });
+            }
+
+            setupCharts() {
+                // Aguardar um pequeno delay para garantir que os elementos canvas estejam prontos
+                setTimeout(() => {
+                    this.setupEquityChart();
+                    this.setupResultsChart();
+                }, 100);
+            }
+
+            setupEquityChart() {
+                const canvas = document.getElementById('equityChart');
+                if (!canvas) {
+                    console.error('Canvas equityChart não encontrado');
+                    return;
+                }
+                
+                const ctx = canvas.getContext('2d');
+                
+                // Calcular evolução do patrimônio
+                let runningTotal = 0;
+                const equityData = this.trades.map(trade => {
+                    runningTotal += trade.result;
+                    return {
+                        x: trade.date,
+                        y: runningTotal
+                    };
+                });
+
+                // Se não há dados, mostrar gráfico vazio
+                if (equityData.length === 0) {
+                    equityData.push({ x: new Date().toISOString().split('T')[0], y: 0 });
+                }
+
+                this.equityChart = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        datasets: [{
+                            label: 'Portfolio Evolution',
+                            data: equityData,
+                            borderColor: '#3498db',
+                            backgroundColor: 'rgba(52, 152, 219, 0.1)',
+                            fill: true,
+                            tension: 0.4,
+                            borderWidth: 3,
+                            pointBackgroundColor: '#3498db',
+                            pointBorderColor: '#ffffff',
+                            pointBorderWidth: 2,
+                            pointRadius: 6,
+                            pointHoverRadius: 8
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                display: false
+                            }
+                        },
+                        scales: {
+                            x: {
+                                type: 'time',
+                                time: {
+                                    unit: 'day',
+                                    displayFormats: {
+                                        day: 'MMM dd'
+                                    }
+                                },
+                                grid: {
+                                    color: 'rgba(52, 152, 219, 0.1)'
+                                },
+                                ticks: {
+                                    color: '#ecf0f1'
+                                }
+                            },
+                            y: {
+                                beginAtZero: true,
+                                grid: {
+                                    color: 'rgba(52, 152, 219, 0.1)'
+                                },
+                                ticks: {
+                                    color: '#ecf0f1',
+                                    callback: (value) => this.formatCurrency(value)
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+
+            setupResultsChart() {
+                const canvas = document.getElementById('resultsChart');
+                if (!canvas) {
+                    console.error('Canvas resultsChart não encontrado');
+                    return;
+                }
+                
+                const ctx = canvas.getContext('2d');
+                
+                const winningTrades = this.trades.filter(trade => trade.result > 0).length;
+                const losingTrades = this.trades.filter(trade => trade.result < 0).length;
+
+                // Se não há dados, mostrar dados padrão
+                const chartData = (winningTrades === 0 && losingTrades === 0) 
+                    ? [1, 0] 
+                    : [winningTrades, losingTrades];
+
+                const chartLabels = (winningTrades === 0 && losingTrades === 0)
+                    ? ['No Trades Yet', '']
+                    : ['Winning Trades', 'Losing Trades'];
+
+                this.resultsChart = new Chart(ctx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: chartLabels,
+                        datasets: [{
+                            data: chartData,
+                            backgroundColor: ['#27ae60', '#e74c3c'],
+                            borderColor: ['#ffffff', '#ffffff'],
+                            borderWidth: 3,
+                            hoverOffset: 10
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                position: 'bottom',
+                                labels: {
+                                    color: '#ecf0f1',
+                                    font: {
+                                        size: 14,
+                                        weight: 'bold'
+                                    },
+                                    padding: 20
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+
+            updateCharts() {
+                if (this.equityChart) {
+                    this.equityChart.destroy();
+                }
+                if (this.resultsChart) {
+                    this.resultsChart.destroy();
+                }
+                this.setupCharts();
+            }
+
+            formatCurrency(value) {
+                // Para valores muito pequenos, mostrar mais casas decimais
+                if (Math.abs(value) < 0.01) {
+                    return new Intl.NumberFormat('en-US', {
+                        style: 'currency',
+                        currency: 'USD',
+                        minimumFractionDigits: 6,
+                        maximumFractionDigits: 8
+                    }).format(value);
+                } else if (Math.abs(value) < 1) {
+                    return new Intl.NumberFormat('en-US', {
+                        style: 'currency',
+                        currency: 'USD',
+                        minimumFractionDigits: 4,
+                        maximumFractionDigits: 6
+                    }).format(value);
+                } else {
+                    return new Intl.NumberFormat('en-US', {
+                        style: 'currency',
+                        currency: 'USD',
+                        minimumFractionDigits: 2,
+                        maximumFractionDigits: 4
+                    }).format(value);
+                }
+            }
+
+            formatDate(dateString) {
+                return new Date(dateString + 'T00:00:00').toLocaleDateString('pt-BR');
+            }
+        }
+
+        // Aguardar o DOM estar carregado antes de inicializar
+        document.addEventListener('DOMContentLoaded', function() {
+            // Inicializar o tracker
+            const tracker = new TradingTracker();
+            
+            // Tornar o tracker acessível globalmente
+            window.tracker = tracker;
+        });
+
+        // Funções de exportação
+        function deleteTrade(id) {
+            if (window.tracker) {
+                window.tracker.deleteTrade(id);
+            }
+        }
+
+        function exportToCSV() {
+            if (!window.tracker) return;
+            const headers = ['Data', 'Ativo', 'Tipo', 'Quantidade', 'Preço Entrada', 'Preço Saída', 'Alavancagem', 'Resultado', 'Porcentagem'];
+            const csvContent = [
+                headers.join(','),
+                ...window.tracker.trades.map(trade => [
+                    trade.date,
+                    trade.symbol,
+                    trade.type,
+                    trade.quantity,
+                    trade.entryPrice,
+                    trade.exitPrice,
+                    trade.leverage || 1,
+                    trade.result.toFixed(2),
+                    trade.percentage.toFixed(2)
+                ].join(','))
+            ].join('\n');
+
+            const blob = new Blob([csvContent], { type: 'text/csv' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'trades.csv';
+            a.click();
+            window.URL.revokeObjectURL(url);
+        }
+
+        function exportToJSON() {
+            if (!window.tracker) return;
+            const jsonContent = JSON.stringify(window.tracker.trades, null, 2);
+            const blob = new Blob([jsonContent], { type: 'application/json' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'trades.json';
+            a.click();
+            window.URL.revokeObjectURL(url);
+        }
+
+        function clearAllData() {
+            if (confirm('Tem certeza que deseja limpar todos os dados? Esta ação não pode ser desfeita.')) {
+                localStorage.removeItem('trades');
+                location.reload();
+            }
+        }
+    </script>
+</body>
+</html>
